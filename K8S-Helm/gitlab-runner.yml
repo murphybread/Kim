@@ -1,0 +1,73 @@
+runners:
+
+    builds: {}
+    config: |
+
+      concurrent = 4
+
+      [[runners]]
+
+        cache_dir = "/gitlab-runner-cache"
+
+        [runners.kubernetes]
+
+          helper_image = "gitlab-org/gitlab-runner/gitlab-runner-helper:x86_64-43b2dc3d"
+
+          bearer_token_overwrite_allowed = false
+
+          image = "docker"
+
+          namespace_overwrite_allowed = ""
+
+          privileged = false
+
+          service_account_overwrite_allowed = ""
+
+          pod_annotations_overwrite_allowed = ""
+
+          # [runners.kubernetes.pod_labels]
+
+          #   "app"= "gitlab-runner-job"
+
+          # [runners.kubernetes.affinity]
+
+          #   [runners.kubernetes.affinity.pod_anti_affinity]
+
+          #     [[runners.kubernetes.affinity.pod_anti_affinity.preferred_during_scheduling_ignored_during_execution]]
+
+          #     weight = 100
+
+          #     [runners.kubernetes.affinity.pod_anti_affinity.preferred_during_scheduling_ignored_during_execution.pod_affinity_term]
+
+          #       topology_key = "kubernetes.io/hostname"
+
+          #       [runners.kubernetes.affinity.pod_anti_affinity.preferred_during_scheduling_ignored_during_execution.pod_affinity_term.label_selector]
+
+          #         [[runners.kubernetes.affinity.pod_anti_affinity.preferred_during_scheduling_ignored_during_execution.pod_affinity_term.label_selector.match_expressions]]
+
+          #           key = "app"
+
+          #           operator = "In"
+
+          #           values = ["gitlab-runner-job"]
+
+          [runners.kubernetes.pod_security_context] # https://docs.gitlab.com/runner/executors/kubernetes.html#set-a-security-policy-for-the-pod
+
+            [[runners.kubernetes.volumes.host_path]] # https://docs.gitlab.com/runner/executors/kubernetes.html#hostpath-volume
+
+            name = "docker"
+
+            mount_path = "/var/run/docker.sock"
+
+            host_path = "/var/run/docker.sock"
+
+            [[runners.kubernetes.volumes.pvc]] # https://docs.gitlab.com/runner/executors/kubernetes.html#persistentvolumeclaim-volume
+
+            name = "gitlab-cache-pvc"
+
+            mount_path = "/gitlab-runner-cache"
+
+    helpers: {}
+    services: {}
+
+    locked: false
